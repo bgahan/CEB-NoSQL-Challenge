@@ -5,7 +5,8 @@ const UserSchema = new Schema({
         type: String
     },
     email: {
-        type: String
+        type: String,
+        match: [/.+@.+\..+/, 'Please make sure email is valid']
     },
     thoughts: [
         {
@@ -31,7 +32,7 @@ const UserSchema = new Schema({
 
 // get total count of friends for a user based  and replies on retrieval
 UserSchema.virtual('friendCount').get(function () {
-    return this.friends.reduce((total, friend) => total + friend.replies.length + 1, 0);
+    return this.friends.length;
 });
 
 // create the User model using the UserSchema
