@@ -2,10 +2,12 @@ const { Schema, model } = require('mongoose');
 
 const UserSchema = new Schema({
     userName: {
-        type: String
+        type: String,
+        requried: true
     },
     email: {
         type: String,
+        requried: true,
         match: [/.+@.+\..+/, 'Please make sure email is valid']
     },
     thoughts: [
