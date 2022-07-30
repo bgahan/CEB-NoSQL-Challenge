@@ -1,9 +1,10 @@
-const { Thought } = require('../models');
+const { Thought, User } = require('../models');
 
 const thoughtController = {
     // get all thoughts
     getAllThought(req, res) {
-        Thought.find({})
+        console.log(Thought)
+        Thought.find()
             .select('-__v')
             .sort({ _id: -1 })
             .then(dbThoughtData => res.json(dbThoughtData))
@@ -13,13 +14,9 @@ const thoughtController = {
             });
     },
 
-    // get one though by id
+    // get one thought by id
     getThoughtById({ params }, res) {
         Thought.findOne({ _id: params.id })
-            .populate({
-                path: 'thought',
-                select: '-__v'
-            })
             .select('-__v')
             .then(dbThoughtData => {
                 if (!dbThoughtData) {
@@ -34,7 +31,7 @@ const thoughtController = {
             });
     },
     // create user
-    createThought({ body }, res) {
+    createThought({ body, params }, res) {
         Thought.create(body)
             .then(({ _id }) => {
                 return User.findOneAndUpdate(
@@ -44,7 +41,7 @@ const thoughtController = {
                 );
             })
             .then(dbThoughtData => res.json(dbThoughtData))
-            .catch(err => res.status(400).json(err));
+            // .catch(err => res.status(400).json(err));
     },
     // update user by id
     updateThought({ params, body }, res) {
@@ -71,7 +68,7 @@ const thoughtController = {
             .catch(err => res.status(400).json(err));
     },
 
-    addReaction() {
+    addReaction(req, res) {
         Thought.findOneAndUpdate(
             { _id: req.params.id },
             { $addToSet: { reactions: req.body } },
@@ -87,7 +84,7 @@ const thoughtController = {
             .catch(err => res.status(400).json(err));
     },
 
-    removeReaction() {
+    removeReaction(req, res) {
         Thought.findOneAndUpdate(
             { _id: req.params.id },
             { $pull: { reactions: req.body } },
